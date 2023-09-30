@@ -10,11 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
-struct dynamodb type {
-	
+type Ddb struct {
+	db *dynamodb.DynamoDB
 }
 
-func setupDDB(port int) *dynamodb.DynamoDB {
+func SetupDDB(port int) Ddb {
 	sessConf := &aws.Config{
 		Credentials: credentials.NewStaticCredentials("STATIC", "DUMMY", "VALUE"),
 		Region:      aws.String("local"),
@@ -24,7 +24,26 @@ func setupDDB(port int) *dynamodb.DynamoDB {
 	ddbConf := aws.Config{
 		Endpoint: aws.String(fmt.Sprintf("http://localhost:%v", port)),
 	}
-	return dynamodb.New(sess, &ddbConf)
+	return Ddb{
+		db: dynamodb.New(sess, &ddbConf),
+	}
 }
 
-func 
+func (d *Ddb) ListTables() (*[]string, error) {
+	remaining := true
+	tables := []string{}
+	for remaining {
+		resp, err := d.db.ListTables(&dynamodb.ListTablesInput{})
+		if err != nil {
+			return nil, fmt.Errorf("could not list tables: %w", err)
+		}
+		if resp.LastEvaluatedTableName == nil {
+			remaining = false
+		}
+		for _, table := range resp.TableNames {
+			tables = append(tables, *table)
+		}
+	}
+
+	return &tables, nil
+}

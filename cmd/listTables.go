@@ -7,6 +7,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	"dynamodbtinker/ddb"
 )
 
 // listTablesCmd represents the listTables command
@@ -21,6 +23,26 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("listTables called")
+
+		var db ddb.Ddb
+		portFlag, err := cmd.Flags().GetInt("port")
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if portFlag != 0 {
+			db = ddb.SetupDDB(portFlag)
+		} else {
+			db = ddb.SetupDDB(8000)
+		}
+
+		tables, err := db.ListTables()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(tables)
+
 	},
 }
 
