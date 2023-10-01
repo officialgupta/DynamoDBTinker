@@ -5,35 +5,20 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
-
-	"dynamodbtinker/ddb"
 )
 
 // listTablesCmd represents the listTables command
 var listTablesCmd = &cobra.Command{
 	Use:   "listTables",
 	Short: "List the tables in ddb",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("listTables called")
-
-		var db ddb.Ddb
-		portFlag, err := cmd.Flags().GetInt("port")
+		db, err := connect(cmd)
 		if err != nil {
 			fmt.Println(err)
-		}
-
-		if portFlag != 0 {
-			db = ddb.SetupDDB(portFlag)
-		} else {
-			db = ddb.SetupDDB(8000)
 		}
 
 		tables, err := db.ListTables()
@@ -41,8 +26,14 @@ to quickly create a Cobra application.`,
 			fmt.Println(err)
 		}
 
-		fmt.Println(tables)
+		if len(*tables) == 0 {
+			fmt.Println("No tables found")
+			os.Exit(1)
+		}
 
+		for _, table := range *tables {
+			fmt.Println(table)
+		}
 	},
 }
 

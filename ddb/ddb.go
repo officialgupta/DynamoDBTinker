@@ -47,3 +47,41 @@ func (d *Ddb) ListTables() (*[]string, error) {
 
 	return &tables, nil
 }
+
+func (d *Ddb) CreateTable(tableName string, primaryKey string) error {
+	_, err := d.db.CreateTable(&dynamodb.CreateTableInput{
+		AttributeDefinitions: []*dynamodb.AttributeDefinition{
+			{
+				AttributeName: aws.String(primaryKey),
+				AttributeType: aws.String("S"),
+			},
+		},
+		KeySchema: []*dynamodb.KeySchemaElement{
+			{
+				AttributeName: aws.String(primaryKey),
+				KeyType:       aws.String("HASH"),
+			},
+		},
+		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
+			ReadCapacityUnits:  aws.Int64(5),
+			WriteCapacityUnits: aws.Int64(5),
+		},
+		TableName: aws.String(tableName),
+	})
+	if err != nil {
+		return fmt.Errorf("could not create table: %w", err)
+	}
+
+	return nil
+}
+
+func (d *Ddb) DeleteTable(tableName string) error {
+	_, err := d.db.DeleteTable(&dynamodb.DeleteTableInput{
+		TableName: aws.String(tableName),
+	})
+	if err != nil {
+		return fmt.Errorf("could not delete table: %w", err)
+	}
+
+	return nil
+}
