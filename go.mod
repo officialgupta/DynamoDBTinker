@@ -1,9 +1,9 @@
 module github.com/officialgupta/DynamoDBTinker
 
-go 1.21
+go 1.19
 
 require (
-	github.com/aws/aws-sdk-go v1.45.19
+	github.com/aws/aws-sdk-go v1.45.20
 	github.com/spf13/cobra v1.7.0
 )
 
