@@ -39,5 +39,5 @@ func init() {
 	// will be global for your application.
 	var port int
 
-	rootCmd.PersistentFlags().IntVarP(&port, "port", "p", 8000, "port that local ddb is running on. Default is 8000")
+	rootCmd.PersistentFlags().IntVarP(&port, "port", "p", 8000, "port that local ddb is running on.")
 }

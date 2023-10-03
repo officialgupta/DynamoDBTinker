@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"dynamodbtinker/ddb"
+	"github.com/officialgupta/DynamoDBTinker/ddb"
 
 	"github.com/spf13/cobra"
 )

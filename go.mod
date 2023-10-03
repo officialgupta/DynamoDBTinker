@@ -1,4 +1,4 @@
-module dynamodbtinker
+module github.com/officialgupta/DynamoDBTinker
 
 go 1.21
 
